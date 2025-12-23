@@ -9,7 +9,7 @@ table_base = declarative_base()
 class User(table_base, UserMixin):
     __tablename__ = 'users'
 
-    id = Column(Integer, primary_key=True, nullable=False)
+    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     name = Column(String, nullable=False)
     surname = Column(String, nullable=False)
     patronymic = Column(String, nullable=False)

@@ -1,7 +1,39 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request, redirect
+from werkzeug.security import generate_password_hash
+from datebase.classes import User
+from datebase import db_session
+from flask_login import login_user
 
 
 register_page = Blueprint('register_page', __name__, template_folder='templates')
-@register_page.route('/register')
+@register_page.route('/register', methods=['GET', 'POST'])
 def registerpage():
-    return render_template('register.html')
+    if request.method == 'POST':
+        surname = request.form.get('surname')
+        name = request.form.get('name')
+        patronymic = request.form.get('patronymic')
+        login = request.form.get('login')
+        password = request.form.get('password')
+        second_password = request.form.get('second_password')
+
+        session = db_session.create_session()
+
+        user = session.query(User).filter_by(login=login).first()
+
+        if not all([surname, name, patronymic, login, password, second_password]) or password != second_password or len(password) < 6 or user:
+            return redirect('/')
+        
+        new_user = User(name=name, surname=surname, patronymic=patronymic, login=login, password=generate_password_hash(password))
+
+        session.add(new_user)
+
+        login_user(new_user)
+
+        try:
+            session.commit()
+        except Exception:
+            session.rollback()
+        finally:
+            session.close()
+    else:
+        return render_template('register.html')
