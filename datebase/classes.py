@@ -1,9 +1,12 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, JSON, DateTime, BOOLEAN, ARRAY
+from sqlalchemy import Column, Integer, String, ForeignKey, JSON, DateTime, BOOLEAN, Table
 from sqlalchemy.orm import relationship, declarative_base
+from flask_login import UserMixin
+
 
 table_base = declarative_base()
 
-class User(table_base):
+
+class User(table_base, UserMixin):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True, nullable=False)
@@ -14,9 +17,8 @@ class User(table_base):
     password = Column(String, nullable=False)
     role = Column(String, default='user')
 
-
     reviews = relationship('Review', back_populates='user')
-    student_info = relationship("Info", back_populates="user")
+    student_info = relationship("Info", back_populates="user", uselist=False)
     history = relationship('History', back_populates='user')
 
 
@@ -24,7 +26,7 @@ class Info(table_base):
     __tablename__ = 'students_info'
 
     id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False, unique=True)
     alergies = Column(JSON)
     aboniment = Column(BOOLEAN, default=False)
     preferences = Column(JSON)
@@ -32,7 +34,6 @@ class Info(table_base):
     clas = Column(String, default='')
 
     user = relationship("User", back_populates="student_info")
-    product = relationship("Product", back_populates='info')
 
 
 class Review(table_base):
@@ -46,7 +47,7 @@ class Review(table_base):
     stars = Column(Integer, nullable=True)
 
     user = relationship('User', back_populates='reviews')
-    dish = relationship('Dish')
+    dish = relationship('Dish', back_populates='reviews')
 
 
 class Product(table_base):
@@ -56,20 +57,7 @@ class Product(table_base):
     name = Column(String, nullable=False)
     amount = Column(Integer, nullable=False, default=0)
 
-    info = relationship('Info', back_populates='product')
-    dishes = relationship('Dish', back_populates='productss')
-
-
-class Dish(table_base):
-    __tablename__ = 'dishes'
-
-    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
-    name = Column(String, nullable=False)
-    products = Column(JSON, nullable=False)
-    amount = Column(Integer, nullable=False, default=0)
-
-    productss = relationship('Product', back_populates='dishes')
-    reviews = relationship('Review', back_populates='dish')
+    dishes = relationship('Dish', secondary='dish_products', back_populates='products')
 
 
 class History(table_base):
@@ -77,6 +65,43 @@ class History(table_base):
 
     id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    date = Column(DateTime, nullable=False)
+    breakfast_date = Column(DateTime, nullable=False)
+    lunch_date = Column(DateTime, nullable=False)
 
     user = relationship('User', back_populates='history')
+
+
+class AssociationDishMenu(table_base):
+    __tablename__ = 'association_dish_menu'
+
+    menu_id = Column(Integer, ForeignKey('menus.id'), primary_key=True)
+    dish_id = Column(Integer, ForeignKey('dishes.id'), primary_key=True)
+
+
+class DishProduct(table_base):
+    __tablename__ = 'dish_products'
+
+    dish_id = Column(Integer, ForeignKey('dishes.id'), primary_key=True)
+    product_id = Column(Integer, ForeignKey('products.id'), primary_key=True)
+
+
+class Menu(table_base):
+    __tablename__ = 'menus'
+
+    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    type = Column(String, nullable=False)
+    get_amount = Column(Integer, nullable=False, default=0)
+
+    dishes = relationship('Dish', secondary='association_dish_menu', back_populates='menus')
+
+
+class Dish(table_base):
+    __tablename__ = 'dishes'
+
+    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    name = Column(String, nullable=False)
+    amount = Column(Integer, nullable=False, default=0)
+
+    products = relationship('Product', secondary='dish_products', back_populates='dishes')
+    reviews = relationship('Review', back_populates='dish')
+    menus = relationship('Menu', secondary='association_dish_menu', back_populates='dishes')
