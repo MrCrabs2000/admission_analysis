@@ -27,15 +27,15 @@ def registerpage():
 
         session.add(new_user)
 
-        login_user(new_user)
 
         try:
             session.commit()
+            login_user(new_user)
         except Exception:
             session.rollback()
         finally:
             session.close()
-        return render_template('main_page.html', name=name, surname=surname, patronymic=patronymic)
+        return redirect('/', name=name, surname=surname, patronymic=patronymic)
     else:
         return render_template('register.html')
 
