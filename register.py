@@ -35,5 +35,7 @@ def registerpage():
             session.rollback()
         finally:
             session.close()
+        return render_template('main_page.html', name=name, surname=surname, patronymic=patronymic)
     else:
         return render_template('register.html')
+
