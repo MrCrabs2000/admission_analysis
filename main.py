@@ -1,8 +1,8 @@
 from flask import Flask, render_template
-from main_page import main_page, mainpage
-from register import register_page
-from exit import exit_page
-from login import login_page
+from routes.main_page import main_page, mainpage
+from routes.register import register_page
+from routes.exit import exit_page
+from routes.login import login_page
 from datebase.db_session import init_database, create_session
 from flask_login import LoginManager, current_user
 from datebase.classes import User
