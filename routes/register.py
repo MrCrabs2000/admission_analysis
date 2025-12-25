@@ -22,15 +22,23 @@ def registerpage():
         user = session.query(User).filter_by(login=login).first()
 
         if not all([surname, name, patronymic, login, password, second_password, student_class]) or password != second_password or len(password) < 6 or user:
+            print()
             return redirect('/')
-        
-        new_user = User(name=name, surname=surname, patronymic=patronymic, login=login, password=generate_password_hash(password))
+
+        new_user = User(name=name, surname=surname, patronymic=patronymic, login=login, password=generate_password_hash(password), role='student')
 
         session.add(new_user)
 
-        new_student = Info(user_id=new_student.id, stud_class=student_class)
+        session.flush()
+        if student_class:
+            new_student = Info(user_id=new_user.id, stud_class=student_class)
+        else:
+            new_student = Info(user_id=new_user.id, stud_class='')
+            print('ok')
 
         session.add(new_student)
+
+
 
         try:
             session.commit()
@@ -39,7 +47,8 @@ def registerpage():
             session.rollback()
         finally:
             session.close()
+
         return redirect('/')
     else:
-        return render_template('register.html')
+        return render_template('auth/register.html')
 
