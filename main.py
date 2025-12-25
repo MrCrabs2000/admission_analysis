@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+from routes.profile_edit import profile_edit_page
 from routes.main_page import main_page, mainpage
 from routes.register import register_page
 from routes.exit import exit_page
@@ -29,6 +30,7 @@ app.register_blueprint(main_page)
 app.register_blueprint(register_page)
 app.register_blueprint(exit_page)
 app.register_blueprint(login_page)
+app.register_blueprint(profile_edit_page)
 
 
 
