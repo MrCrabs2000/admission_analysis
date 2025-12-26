@@ -32,8 +32,8 @@ class Info(table_base):
     alergies = Column(JSON)
     aboniment = Column(BOOLEAN, default=False)
     preferences = Column(JSON)
-    balance = Column(Integer, nullable=False, default=0)
-    stud_class = Column(String, default='')
+    balance = Column(Integer, nullable='-', default=0)
+    stud_class = Column(String, default='-')
 
     user = relationship("User", back_populates="student_info")
 
