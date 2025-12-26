@@ -60,3 +60,16 @@ button.accent {
     color: var(--text-light);
     background: var(--primary);
 }
+
+select {
+    padding: 4px 12px;
+    font-family: inherit;
+    border: 2px solid transparent;
+    border-radius: var(--border-radius-small);
+    background: var(--bg-light);
+    box-shadow: var(--shadow-small);
+}
+
+select:focus {
+    border: 2px solid var(--primary);
+}
