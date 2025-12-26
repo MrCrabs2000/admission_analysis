@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile edit</title>
+</head>
+<body>
+    <h1>Редактирование профиля</h1>
+    <form method="post">
+        <label>Логин:</label>
+        <input name="login" value="{{ login }}" placeholder="Логин"><br>
+
+        <label>Аллергия:</label>
+        <input name="alergies" value="{{ alergies }}" placeholder="Аллергия"><br>
+
+        <label>Предпочтения:</label>
+        <input name="preferences" value="{{ preferences }}" placeholder="Предпочтения"><br>
+
+        <label>Пароль:</label>
+        <input type="password" name="password" placeholder="Пароль"><br>
+
+        <label>Повторите пароль:</label>
+        <input type="password" name="second_password" placeholder="Повторите пароль"><br>
+
+        <input type="submit" value="Сохранить изменения">
+    </form>
+</body>
+</html>

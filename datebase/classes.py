@@ -1,3 +1,5 @@
+from email.policy import default
+
 from sqlalchemy import Column, Integer, String, ForeignKey, JSON, DateTime, BOOLEAN, Table
 from sqlalchemy.orm import relationship, declarative_base
 from flask_login import UserMixin
@@ -15,7 +17,7 @@ class User(table_base, UserMixin):
     patronymic = Column(String, nullable=False)
     login = Column(String, nullable=False)
     password = Column(String, nullable=False)
-    role = Column(String, default='user')
+    role = Column(String, default='student')
 
     reviews = relationship('Review', back_populates='user')
     student_info = relationship("Info", back_populates="user", uselist=False)
@@ -30,8 +32,8 @@ class Info(table_base):
     alergies = Column(JSON)
     aboniment = Column(BOOLEAN, default=False)
     preferences = Column(JSON)
-    balance = Column(Integer, nullable=False, default=0)
-    clas = Column(String, default='')
+    balance = Column(Integer, nullable='-', default=0)
+    stud_class = Column(String, default='-')
 
     user = relationship("User", back_populates="student_info")
 
@@ -101,6 +103,7 @@ class Dish(table_base):
     id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     name = Column(String, nullable=False)
     amount = Column(Integer, nullable=False, default=0)
+
 
     products = relationship('Product', secondary='dish_products', back_populates='dishes')
     reviews = relationship('Review', back_populates='dish')
