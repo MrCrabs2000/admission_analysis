@@ -1,3 +1,5 @@
+from email.policy import default
+
 from sqlalchemy import Column, Integer, String, ForeignKey, JSON, DateTime, BOOLEAN, Table
 from sqlalchemy.orm import relationship, declarative_base
 from flask_login import UserMixin
@@ -15,7 +17,7 @@ class User(table_base, UserMixin):
     patronymic = Column(String, nullable=False)
     login = Column(String, nullable=False)
     password = Column(String, nullable=False)
-    role = Column(String, default='user')
+    role = Column(String, default='student')
 
     reviews = relationship('Review', back_populates='user')
     student_info = relationship("Info", back_populates="user", uselist=False)
